@@ -12,6 +12,11 @@ class Game {
 	 * @param {number} amount -  nombre de quadrats per fila de la quadrícula
 	 */
 	constructor(width,height,amount) {
+		this.width = width;
+		this.height = height;
+		this.amount = amount; 
+		this.initCanvas(width, height);
+		this.start();
 	}
 
 	/**
@@ -20,7 +25,15 @@ class Game {
 	 * @param {number} width -  width del canvas
 	 * @param {number} height -  height del canvas
 	 */
+	
 	initCanvas(width, height) {
+		let canvas = document.createElement('canvas');
+		
+		canvas.width = width;
+		canvas.height = height;
+		canvas.style.border   = "1px solid";
+		this.ctx = canvas.getContext('2d');
+		document.getElementsByTagName('body')[0].appendChild(canvas);
 	}
 
 	/**
@@ -28,6 +41,9 @@ class Game {
 	 * Serp al centre, direcció cap a la dreta, puntuació 0
 	 */
 	start() {
+		this.puntuacio = 0;
+		this.direccio = [0,1];
+		this.pos =[[parseInt(this.amount/2), parseInt(this.amount/2)]];
 	}
 
 	/**
@@ -37,18 +53,31 @@ class Game {
 	 * @param {string} color -  color del quadrat
 	 */
 	drawSquare(x,y,color) {
+		let a = this.width/this.amount; 
+		this.ctx.beginPath();
+		this.ctx.strokeStyle = color;
+		this.ctx.rect(a*x, a*y, a, a);
+		this.ctx.stroke();
 	}
 
 	/**
 	 * Neteja el canvas (pinta'l de blanc)
 	 */
-	clear() {
+	clear() { 
+		this.ctx.beginPath();
+		this.ctx.fillStyle = 'grey';
+		this.ctx.fillRect(0, 0, this.width, this.height);
+		this.ctx.stroke();
+
 	}
 
 	/**
 	 * Dibuixa la serp al canvas
 	 */
 	drawSnake() {
+		for (let i=0; i<this.pos.length; i++){
+			this.drawSquare(this.pos[i][0],this.pos[i][1],'black');
+		}
 	}
 
 	/**
@@ -77,6 +106,12 @@ class Game {
 	 * @return {Array} - nova posició
 	 */
 	newTile() {
+		let newpos=[];
+		for (let i = 0; i<this.pos.length; i++){
+			newpos[0] = this.pos[0][0]+this.direccio[0];
+			newpos[1] = this.pos[0][1]+this.direccio[1];
+		}
+		return newpos;
 	}
 
 	/**
@@ -84,6 +119,9 @@ class Game {
 	 * i ho dibuixa al canvas
 	 */
 	step() {
+		this.clear();
+		this.pos[0] = this.newTile();
+		this.drawSnake();
 	}
 
 	/**
@@ -91,6 +129,22 @@ class Game {
 	 * @param {event} e - l'event de la tecla premuda
 	 */
 	input(e) {
+		if (e.keyCode == '38') {
+			this.direccio = [0,-1];
+			// up arrow
+		}
+		else if (e.keyCode == '40') {
+			this.direccio = [0,1];
+			// down arrow
+		}
+		else if (e.keyCode == '37') {
+			this.direccio = [-1,0];
+		   // left arrow
+		}
+		else if (e.keyCode == '39') {
+			this.direccio = [1,0];
+		   // right arrow
+		}
 	}
 }
 
