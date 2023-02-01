@@ -12,6 +12,10 @@ class Game {
 	 * @param {number} amount -  nombre de quadrats per fila de la quadrícula
 	 */
 	constructor(width,height,amount) {
+		this.width = width;
+		this.height = height;
+		this.amount = amount;
+
 	}
 
 	/**
@@ -21,6 +25,8 @@ class Game {
 	 * @param {number} height -  height del canvas
 	 */
 	initCanvas(width, height) {
+		var canvas = document.getElementById('micanvas');
+		var ctx = canvas.getContext('2d');
 	}
 
 	/**
@@ -28,8 +34,10 @@ class Game {
 	 * Serp al centre, direcció cap a la dreta, puntuació 0
 	 */
 	start() {
+		let direccion = [0,1];
+		let puntuacio = 0;
+		let serpPos = [[5,5]]
 	}
-
 	/**
 	 * Dibuixa un quadrat de la mida de la quadrícula (passada al constructor) al canvas
 	 * @param {number} x -  posició x de la quadrícula (no del canvas)
@@ -37,24 +45,33 @@ class Game {
 	 * @param {string} color -  color del quadrat
 	 */
 	drawSquare(x,y,color) {
+		ctx.fillStyle = color;
+		ctx.fillRect(x,y, width, height);
 	}
 
 	/**
 	 * Neteja el canvas (pinta'l de blanc)
 	 */
 	clear() {
+		ctx.fillStyle = "rgb(255, 255, 255)";
+		ctx.fillRect(x,y, width, height);
 	}
 
 	/**
 	 * Dibuixa la serp al canvas
 	 */
 	drawSnake() {
+		ctx.rect(5,5, 2 ,2)
+		ctx.stroke();
 	}
 
 	/**
 	 * Dibuixa la poma al canvas
 	 */
 	drawFood() {
+		ctx.fillStyle = "#FF0000";
+		ctx.rect(pomaX, pomaY, 1 ,1)
+		ctx.stroke();
 	}
 
 	/**
@@ -64,12 +81,24 @@ class Game {
 	 * @return {boolean} - xoca o no
 	 */
 	collides(x,y) {
+		if ((x == width) || (y == height)){
+			return true;
+		}	
+		else
+			return false;
 	}
 
 	/**
 	 * Afegeix un menjar a una posició aleatòria, la posició no ha de ser cap de les de la serp
 	 */
 	addFood() {
+		do{
+			let pomaX = Math.floor(Math.random() * (width +1));
+			let pomaY = Math.floor(Math.random() * (height +1))
+			let pomaPos = [pomaX, pomaY]
+		} while (pomaPos == serpPos);
+		
+		
 	}
 
 	/**
@@ -77,6 +106,22 @@ class Game {
 	 * @return {Array} - nova posició
 	 */
 	newTile() {
+		serpPos = [serpPos[0[0]] + direccion[0[0]], serpPos[1[1]] + direccion[1[1]]];
+		if (serpPos == pomaPos){
+		}
+		else if (direccion == [0,1]){
+
+		}
+		else if (direccion == [0,-1]){
+			
+		}
+		else if (direccion == [1,0]){
+			
+		}
+		else if (direccion == [-1,0]){
+			
+		}
+
 	}
 
 	/**
@@ -84,6 +129,7 @@ class Game {
 	 * i ho dibuixa al canvas
 	 */
 	step() {
+		
 	}
 
 	/**
