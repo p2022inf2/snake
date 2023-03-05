@@ -1,99 +1,155 @@
-/**
- * Classe que representa el joc de la serp (snake)
- * @class
- */
 class Game {
+    constructor(width, height, amount) {
+        this.width = width;
+        this.height = height;
+        this.amount = amount;
+        this.serp = [{ x: width / 2, y: height / 2 }];
+        this.food = {};
+        this.direccion = "right";
+        this.puntuacion = 0;
+        this.canvasElem = document.createElement('canvas');
+        this.ctx = this.canvasElem.getContext('2d');
+        this.initCanvas();
+        this.addFood();
+        this.draw();
+    }
 
-	/**
-	 * Inicialitza els paràmetres del joc i crea el canvas
-	 * @constructor
-	 * @param {number} width -  width del canvas
-	 * @param {number} height -  height del canvas
-	 * @param {number} amount -  nombre de quadrats per fila de la quadrícula
-	 */
-	constructor(width,height,amount) {
-	}
+    initCanvas() {
+        this.canvasElem.id = "canvas";
+        this.canvasElem.width = this.width;
+        this.canvasElem.height = this.height;
+        this.canvasElem.style.border = "2px solid black";
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        document.body.appendChild(this.canvasElem);
+    }
 
-	/**
-	 * Crea un canvas i es guarda el [context](https://developer.mozilla.org/es/docs/Web/API/CanvasRenderingContext2D) a un atribut per poder
-	 * accedir-hi des dels mètodes de pintar al canvas (com ara drawSquare, clear)
-	 * @param {number} width -  width del canvas
-	 * @param {number} height -  height del canvas
-	 */
-	initCanvas(width, height) {
-	}
+    start() {
+        this.serp = [{ x: this.width / 2, y: this.height / 2 }];
+        this.direccion = "right";
+        this.puntuacion = 0;
+        this.addFood();
+        this.draw();
+    }
 
-	/**
-	 * Inicialitza els paràmetres del joc:
-	 * Serp al centre, direcció cap a la dreta, puntuació 0
-	 */
-	start() {
-	}
+    draw() {
+        this.clear();
+        this.drawSnake();
+        this.drawFood();
+    }
 
-	/**
-	 * Dibuixa un quadrat de la mida de la quadrícula (passada al constructor) al canvas
-	 * @param {number} x -  posició x de la quadrícula (no del canvas)
-	 * @param {number} y -  posició y de la quadrícula (no del canvas)
-	 * @param {string} color -  color del quadrat
-	 */
-	drawSquare(x,y,color) {
-	}
+    clear() {
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(0, 0, this.width, this.height);
+    }
 
-	/**
-	 * Neteja el canvas (pinta'l de blanc)
-	 */
-	clear() {
-	}
+    drawSquare(x, y, color) {
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x, y, this.amount, this.amount);
+    }
 
-	/**
-	 * Dibuixa la serp al canvas
-	 */
-	drawSnake() {
-	}
+    drawSnake() {
+        for (let i = 0; i < this.serp.length; i++) {
+            this.drawSquare(this.serp[i].x, this.serp[i].y, "black");
+        }
+    }
 
-	/**
-	 * Dibuixa la poma al canvas
-	 */
-	drawFood() {
-	}
+    drawFood() {
+        this.drawSquare(this.food.x, this.food.y, "red");
+    }
 
-	/**
-	 * La serp xoca amb la posició donada?
-	 * @param {number} x -  posició x a comprovar
-	 * @param {number} y -  posició y a comprovar
-	 * @return {boolean} - xoca o no
-	 */
-	collides(x,y) {
-	}
+    collides(x, y) {
+        for (let i = 0; i < this.serp.length; i++) {
+            if (this.serp[i].x === x && this.serp[i].y === y) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Afegeix un menjar a una posició aleatòria, la posició no ha de ser cap de les de la serp
-	 */
-	addFood() {
-	}
+    addFood() {
+        do {
+            this.food.x = Math.floor(Math.random() * this.width / this.amount) * this.amount;
+            this.food.y = Math.floor(Math.random() * this.height / this.amount) * this.amount;
+        } while (this.collides(this.food.x, this.food.y));
+    }
 
-	/**
-	 * Calcula una nova posició a partir de la ubicació de la serp
-	 * @return {Array} - nova posició
-	 */
-	newTile() {
-	}
+    newTile() {
+        switch (this.direccion) {
+            case "right":
+                return { x: this.serp[this.serp.length - 1].x + this.amount, y: this.serp[this.serp.length - 1].y };
+            case "left":
+                return { x: this.serp[this.serp.length - 1].x - this.amount, y: this.serp[this.serp.length - 1].y };
+            case "up":
+                return { x: this.serp[this.serp.length - 1].x, y: this.serp[this.serp.length - 1].y - this.amount };
+            case "down":
+                return { x: this.serp[this.serp.length - 1].x, y: this.serp[this.serp.length - 1].y + this.amount };
+        }
 
-	/**
-	 * Calcula el nou estat del joc, nova posició de la serp, nou menjar si n'hi ha ...
-	 * i ho dibuixa al canvas
-	 */
-	step() {
-	}
+        
+        
+    }
 
-	/**
-	 * Actualitza la direcció de la serp a partir de l'event (tecla dreta, esquerra, amunt, avall)
-	 * @param {event} e - l'event de la tecla premuda
-	 */
-	input(e) {
-	}
-}
+    
 
-let game = new Game(300,300,15); // Crea un nou joc
-document.onkeydown = game.input.bind(game); // Assigna l'event de les tecles a la funció input del nostre joc
-window.setInterval(game.step.bind(game),100); // Fes que la funció que actualitza el nostre joc s'executi cada 100ms
+        /**
+     * Mou la serp una casella en la direcció actual, actualitza la puntuació i comprova si s'ha acabat el joc
+     */
+    
+        move() {
+            // Crea una nova posició per la serp
+            let newPos = this.newTile();
+    
+            // Comprova si la nova posició està dins del canvas
+            if (newPos.x < 0 || newPos.x >= this.width || newPos.y < 0 || newPos.y >= this.height) {
+                this.gameOver();
+                return;
+            }
+    
+            // Comprova si la nova posició xoca amb la serp
+            if (this.collides(newPos.x, newPos.y)) {
+                this.gameOver();
+                return;
+            }
+    
+            // Afegeix la nova posició a la serp
+            this.serp.push(newPos);
+    
+            // Comprova si la nova posició té la poma
+            if (newPos.x === this.food.x && newPos.y === this.food.y) {
+                this.puntuacion += 1;
+                this.addFood();
+            } else {
+                // Elimina la cua de la serp
+                this.serp.shift();
+            }
+    
+            // Neteja el canvas i dibuixa la serp i la poma
+            this.clear();
+            this.drawSnake();
+            this.drawFood();
+    
+            // Actualitza la puntuació a la pantalla
+            document.getElementById("score").innerHTML = "Puntuació: " + this.puntuacion;
+        }
+    
+        /** 
+         * Acaba el joc i mostra la puntuació
+         */
+        gameOver() {
+            alert("Has perdut! Puntuació: " + this.puntuacion);
+            
+            
+            location.reload();
+        }
+
+        
+
+        
+    }
+    
+    // Crea el joc i inicia el bucle principal
+    let joc = new Game(400, 400, 20);
+    joc.addFood();
+    setInterval(() => joc.move(), 100);
+    
